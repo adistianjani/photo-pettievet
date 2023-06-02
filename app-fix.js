@@ -142,6 +142,6 @@ app.get('/vet/emergencyreq/:id', (req, res) => {
 
 
 // Memulai server Express.js
-app.listen(3000, () => {
-    console.log('Server Express berjalan di port 3000');
+app.listen(5000, () => {
+    console.log('Server Express berjalan di port 5000');
 });
