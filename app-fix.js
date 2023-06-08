@@ -16,22 +16,22 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // dev
-const connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "app-vet",
-    multipleStatements: true,
-});
-
-// prod
 // const connection = mysql.createConnection({
-//     host: "34.173.104.131",
+//     host: "localhost",
 //     user: "root",
-//     password: "qfuF@*4#7T0z/`3s",
+//     password: "",
 //     database: "app-vet",
 //     multipleStatements: true,
 // });
+
+// prod
+const connection = mysql.createConnection({
+    host: "34.173.104.131",
+    user: "root",
+    password: "qfuF@*4#7T0z/`3s",
+    database: "app-vet",
+    multipleStatements: true,
+});
 
 connection.connect((error) => {
     if (error) {
