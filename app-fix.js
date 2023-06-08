@@ -16,22 +16,22 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // dev
-// const connection = mysql.createConnection({
-//     host: "localhost",
-//     user: "root",
-//     password: "",
-//     database: "app-vet",
-//     multipleStatements: true,
-// });
-
-// prod
 const connection = mysql.createConnection({
-    host: "34.173.104.131",
+    host: "localhost",
     user: "root",
-    password: "qfuF@*4#7T0z/`3s",
+    password: "",
     database: "app-vet",
     multipleStatements: true,
 });
+
+// prod
+// const connection = mysql.createConnection({
+//     host: "34.173.104.131",
+//     user: "root",
+//     password: "qfuF@*4#7T0z/`3s",
+//     database: "app-vet",
+//     multipleStatements: true,
+// });
 
 connection.connect((error) => {
     if (error) {
@@ -86,22 +86,15 @@ app.get('/user/photo/:id', (req, res) => {
 // foto emergency req
 const moment = require('moment');
 
-app.post('/customer/emergencyreq/:id_vet/:id_customer', upload.single('photo'), (req, res) => {
-    const jenis_hewan = req.body.jenis_hewan;
-    const validJenisHewan = ['kucing', 'anjing', 'Kucing', 'Anjing'];
-
-    if (!validJenisHewan.includes(jenis_hewan.toLowerCase())) {
-        return res.status(400).json({ message: 'Jenis hewan tidak valid' });
-    }
+app.post('/customer/emergencyreq/:id_vet/:id_pet', upload.single('photo'), (req, res) => {
 
     const emergency_req = {
         photo: req.file.path,
-        jenis_hewan: jenis_hewan,
         keluhan: req.body.keluhan,
         lokasi: req.body.lokasi,
         waktu: moment().format('YYYY-MM-DD HH:mm'),
         id_vet: req.params.id_vet,
-        id_customer: req.params.id_customer
+        id_pet: req.params.id_pet
     };
 
     connection.query('INSERT INTO emergency_req SET ?', emergency_req, (error, result) => {
