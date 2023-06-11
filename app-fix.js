@@ -3,6 +3,9 @@ const mysql = require('mysql');
 const fs = require('fs');
 const multer = require('multer');
 const app = express();
+var cors = require("cors");
+
+app.use(cors({ origin: true, credentials: true }));
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
