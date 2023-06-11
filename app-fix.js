@@ -92,6 +92,8 @@ app.post('/customer/emergencyreq/:id_vet/:id_pet', upload.single('photo'), (req,
         photo: req.file.path,
         keluhan: req.body.keluhan,
         lokasi: req.body.lokasi,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
         waktu: moment().format('YYYY-MM-DD HH:mm'),
         id_vet: req.params.id_vet,
         id_pet: req.params.id_pet
