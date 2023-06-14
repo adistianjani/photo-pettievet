@@ -188,7 +188,7 @@ app.get('/vet/emergencyreq/:id', (req, res) => {
 // upload foto klinik 
 app.post('/vet/upload/photo/:id_vet', upload.single('photo'), (req, res) => {
     const vet = {
-        id_vet: req.params.id_vet,
+        id: req.params.id_vet,
         photo: req.file.path
     };
 
@@ -233,7 +233,7 @@ app.get('/vet/photo/:id_vet', (req, res) => {
 // upload document klinik 
 app.post('/vet/upload/doc/:id_vet', uploadFile.single('file'), (req, res) => {
     const vet = {
-        id_vet: req.params.id_vet,
+        id: req.params.id_vet,
         document: req.file.path
     };
 
