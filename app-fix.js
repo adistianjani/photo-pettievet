@@ -7,6 +7,7 @@ var cors = require("cors");
 
 app.use(cors({ origin: true, credentials: true }));
 
+// config photo
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/');
@@ -15,8 +16,39 @@ const storage = multer.diskStorage({
         cb(null, file.fieldname + '-' + Date.now() + '.jpg');
     }
 });
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 } // 5 MB in bytes
+});
 
-const upload = multer({ storage: storage });
+// config file doc pdf
+// Konfigurasi penyimpanan
+const storageFile = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'document/'); // Tentukan direktori tujuan pengunggahan file
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, 'file-' + uniqueSuffix + '.pdf'); // Tentukan nama file dengan ekstensi PDF
+    }
+});
+
+// Filter untuk hanya menerima file dengan ekstensi PDF
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+        cb(null, true);
+    } else {
+        cb(new Error('Only PDF files are allowed.'), false);
+    }
+};
+
+// Konfigurasi multer
+const uploadFile = multer({
+    storage: storageFile,
+    limits: { fileSize: 5 * 1024 * 1024 }, // Batas ukuran file (5 MB)
+    fileFilter: fileFilter
+});
+
 
 // dev
 // const connection = mysql.createConnection({
@@ -47,7 +79,7 @@ connection.connect((error) => {
 // add foto di profil
 app.put('/user/upload/photo/:id', upload.single('photo'), (req, res) => {
     const user = {
-        id: req.params.id,
+        id_user: req.params.id,
         photo: req.file.path
     };
 
@@ -88,7 +120,6 @@ app.get('/user/photo/:id', (req, res) => {
 
 // foto emergency req
 const moment = require('moment');
-
 app.post('/customer/emergencyreq/:id_vet/:id_pet', upload.single('photo'), (req, res) => {
 
     const emergency_req = {
@@ -98,6 +129,7 @@ app.post('/customer/emergencyreq/:id_vet/:id_pet', upload.single('photo'), (req,
         latitude: req.body.latitude,
         longitude: req.body.longitude,
         waktu: moment().format('YYYY-MM-DD HH:mm'),
+        status: 'Pending',
         id_vet: req.params.id_vet,
         id_pet: req.params.id_pet
     };
@@ -108,7 +140,10 @@ app.post('/customer/emergencyreq/:id_vet/:id_pet', upload.single('photo'), (req,
             res.status(500).send('Error saving emergency request to database');
         } else {
             console.log('Emergency request saved to database.');
-            res.send('Emergency request saved to database');
+            res.status(200).send({
+                message: 'Emergency req saved to database.',
+                result: emergency_req
+            });
         }
     });
 });
@@ -137,11 +172,102 @@ app.get('/vet/emergencyreq/:id', (req, res) => {
 
                     const responseData = {
                         emergencyRequest: emergencyRequest,
-                        photoData: base64Photo
+                        photoData: base64Photo,
+
                     };
 
                     res.contentType('application/json');
                     res.send(responseData);
+                }
+            });
+        }
+    });
+});
+
+
+// upload foto klinik 
+app.post('/vet/upload/photo/:id_vet', upload.single('photo'), (req, res) => {
+    const vet = {
+        id_vet: req.params.id_vet,
+        photo: req.file.path
+    };
+
+    connection.query('UPDATE users SET ? WHERE id = ?', [vet, req.params.id_vet], (error, result) => {
+        if (error) {
+            console.error('Error saving photo to database: ', error);
+            res.status(500).send('Error saving photo to database');
+        } else {
+            console.log('Photo saved to database.');
+            res.status(200).send({
+                message: 'Photo saved to database.',
+                result: vet
+            });
+        }
+    });
+});
+
+// get foto
+app.get('/vet/photo/:id_vet', (req, res) => {
+    const id_vet = req.params.id_vet;
+
+    connection.query('SELECT * FROM users WHERE id = ?', id_vet, (error, results) => {
+        if (error) {
+            console.error('Error retrieving user from database: ', error);
+            res.status(500).send('Error retrieving user from database');
+        } else {
+            const user = results[0];
+
+            fs.readFile(user.photo, (error, data) => {
+                if (error) {
+                    console.error('Error reading photo file: ', error);
+                    res.status(500).send('Error reading photo file');
+                } else {
+                    res.contentType('image/jpeg');
+                    res.send(data);
+                }
+            });
+        }
+    });
+});
+
+// upload document klinik 
+app.post('/vet/upload/doc/:id_vet', uploadFile.single('file'), (req, res) => {
+    const vet = {
+        id_vet: req.params.id_vet,
+        document: req.file.path
+    };
+
+    connection.query('UPDATE users SET ? WHERE id = ?', [vet, req.params.id_vet], (error, result) => {
+        if (error) {
+            console.error('Error saving File to database: ', error);
+            res.status(500).send('Error saving File to database');
+        } else {
+            console.log('File saved to database.');
+            res.status(200).send({
+                message: 'File saved to database.',
+                result: vet
+            });
+        }
+    });
+});
+
+// download/show file doc
+app.get('/vet/download/doc/:id_vet', (req, res) => {
+    const id_vet = req.params.id_vet;
+
+    // Lakukan pengambilan informasi file PDF dari database berdasarkan id_vet
+    connection.query('SELECT document FROM users WHERE id = ?', id_vet, (error, result) => {
+        if (error) {
+            console.error('Error retrieving file information: ', error);
+            res.status(500).send('Error retrieving file information');
+        } else {
+            const filePath = result[0].document; // Path file PDF dari database
+
+            // Mengirimkan file PDF sebagai respons
+            res.download(filePath, (error) => {
+                if (error) {
+                    console.error('Error downloading file: ', error);
+                    res.status(500).send('Error downloading file');
                 }
             });
         }
