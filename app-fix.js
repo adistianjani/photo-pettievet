@@ -168,16 +168,8 @@ app.get('/vet/emergencyreq/:id', (req, res) => {
                     console.error('Error reading photo file: ', error);
                     res.status(500).send('Error reading photo file');
                 } else {
-                    const base64Photo = Buffer.from(data).toString('base64');
-
-                    const responseData = {
-                        emergencyRequest: emergencyRequest,
-                        photoData: base64Photo,
-
-                    };
-
-                    res.contentType('application/json');
-                    res.send(responseData);
+                    res.contentType('image/jpeg');
+                    res.send(data);
                 }
             });
         }
