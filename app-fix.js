@@ -4,6 +4,7 @@ const fs = require('fs');
 const multer = require('multer');
 const app = express();
 var cors = require("cors");
+const path = require('path');
 
 app.use(cors({ origin: true, credentials: true }));
 
@@ -243,23 +244,24 @@ app.post('/vet/upload/doc/:id_vet', uploadFile.single('file'), (req, res) => {
     });
 });
 
-// download/show file doc
-app.get('/vet/download/doc/:id_vet', (req, res) => {
+// show/show file doc
+app.get('/vet/show/doc/:id_vet', (req, res) => {
     const id_vet = req.params.id_vet;
 
-    // Lakukan pengambilan informasi file PDF dari database berdasarkan id_vet
+    // Lakukan pengambilan informasi file dokumen dari database berdasarkan id_vet
     connection.query('SELECT document FROM users WHERE id = ?', id_vet, (error, result) => {
         if (error) {
             console.error('Error retrieving file information: ', error);
             res.status(500).send('Error retrieving file information');
         } else {
-            const filePath = result[0].document; // Path file PDF dari database
+            const relativeFilePath = result[0].document; // Path relatif file dokumen dari database
+            const absoluteFilePath = path.resolve(__dirname, relativeFilePath); // Konversi path relatif menjadi path absolut
 
-            // Mengirimkan file PDF sebagai respons
-            res.download(filePath, (error) => {
+            // Mengirimkan file dokumen sebagai respons
+            res.sendFile(absoluteFilePath, (error) => {
                 if (error) {
-                    console.error('Error downloading file: ', error);
-                    res.status(500).send('Error downloading file');
+                    console.error('Error sending file: ', error);
+                    res.status(500).send('Error sending file');
                 }
             });
         }
