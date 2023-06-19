@@ -80,7 +80,7 @@ connection.connect((error) => {
 // add foto di profil
 app.put('/user/upload/photo/:id', upload.single('photo'), (req, res) => {
     const user = {
-        id_user: req.params.id,
+        id: req.params.id,
         photo: req.file.path
     };
 
