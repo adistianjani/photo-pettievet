@@ -1,0 +1,13 @@
+{
+    "builds": [{
+        "src": "app-fix.js",
+        "use": "@vercel/node"
+    }],
+    "routes": [{
+        "src": "/(.*)",
+        "dest": "app-fix.js"
+    }],
+    "rewrites": [
+        { "source": "/(.*)", "destination": "/app-fix.js" }
+    ]
+}

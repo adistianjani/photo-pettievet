@@ -77,6 +77,12 @@ connection.connect((error) => {
     }
 });
 
+/* GET home page. */
+router.get("/", function(req, res, next) {
+    return res.status(401).json({ message: "Halo, ini adalah URL base dari API pettie-vet" });
+});
+
+
 // add foto di profil
 app.put('/user/upload/photo/:id', upload.single('photo'), (req, res) => {
     const user = {
@@ -89,8 +95,10 @@ app.put('/user/upload/photo/:id', upload.single('photo'), (req, res) => {
             console.error('Error saving user to database: ', error);
             res.status(500).send('Error saving user to database');
         } else {
-            console.log('User saved to database.');
-            res.send('User saved to database');
+            console.log('Foto telah disimpan');
+            res.status(200).json({
+                message: 'Foto telah disimpan'
+            })
         }
     });
 });
