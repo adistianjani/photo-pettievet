@@ -4,42 +4,42 @@
         { "src": "app.js", "use": "@vercel/node" }
     ],
     "routes": [{
-            "src": "/user/upload/photo/:id",
+            "src": "/api/user/upload/photo/:id",
             "methods": ["PUT"],
             "dest": "/app.js"
         },
         {
-            "src": "/user/photo/:id",
+            "src": "/api/user/photo/:id",
             "methods": ["GET"],
             "dest": "/app.js"
         },
         {
-            "src": "/customer/emergencyreq/:id_vet/:id_pet",
+            "src": "/api/customer/emergencyreq/:id_vet/:id_pet",
             "methods": ["POST"],
             "dest": "/app.js"
         },
         {
-            "src": "/vet/emergencyreq/:id",
+            "src": "/api/vet/emergencyreq/:id",
             "methods": ["GET"],
             "dest": "/app.js"
         },
         {
-            "src": "/vet/upload/photo/:id_vet",
+            "src": "/api/vet/upload/photo/:id_vet",
             "methods": ["POST"],
             "dest": "/app.js"
         },
         {
-            "src": "/vet/photo/:id_vet",
+            "src": "/api/vet/photo/:id_vet",
             "methods": ["GET"],
             "dest": "/app.js"
         },
         {
-            "src": "/vet/upload/doc/:id_vet",
+            "src": "/api/vet/upload/doc/:id_vet",
             "methods": ["POST"],
             "dest": "/app.js"
         },
         {
-            "src": "/vet/show/doc/:id_vet",
+            "src": "/api/vet/show/doc/:id_vet",
             "methods": ["GET"],
             "dest": "/app.js"
         },

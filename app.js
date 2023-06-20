@@ -84,7 +84,7 @@ app.get("/", function(req, res, next) {
 
 
 // add foto di profil
-app.put('/user/upload/photo/:id', upload.single('photo'), (req, res) => {
+app.put('/api/user/upload/photo/:id', upload.single('photo'), (req, res) => {
     const user = {
         id: req.params.id,
         photo: req.file.path
@@ -104,7 +104,7 @@ app.put('/user/upload/photo/:id', upload.single('photo'), (req, res) => {
 });
 
 // get foto
-app.get('/user/photo/:id', (req, res) => {
+app.get('/api/user/photo/:id', (req, res) => {
     const userId = req.params.id;
 
     connection.query('SELECT * FROM users WHERE id = ?', userId, (error, results) => {
@@ -129,7 +129,7 @@ app.get('/user/photo/:id', (req, res) => {
 
 // foto emergency req
 const moment = require('moment');
-app.post('/customer/emergencyreq/:id_vet/:id_pet', upload.single('photo'), (req, res) => {
+app.post('/api/customer/emergencyreq/:id_vet/:id_pet', upload.single('photo'), (req, res) => {
 
     const emergency_req = {
         photo: req.file.path,
@@ -158,7 +158,7 @@ app.post('/customer/emergencyreq/:id_vet/:id_pet', upload.single('photo'), (req,
 });
 
 
-app.get('/vet/emergencyreq/:id', (req, res) => {
+app.get('/api/vet/emergencyreq/:id', (req, res) => {
     const requestId = req.params.id;
 
     connection.query('SELECT * FROM emergency_req WHERE id = ?', [requestId], (error, results) => {
@@ -187,7 +187,7 @@ app.get('/vet/emergencyreq/:id', (req, res) => {
 
 
 // upload foto klinik 
-app.post('/vet/upload/photo/:id_vet', upload.single('photo'), (req, res) => {
+app.post('/api/vet/upload/photo/:id_vet', upload.single('photo'), (req, res) => {
     const vet = {
         id: req.params.id_vet,
         photo: req.file.path
@@ -208,7 +208,7 @@ app.post('/vet/upload/photo/:id_vet', upload.single('photo'), (req, res) => {
 });
 
 // get foto
-app.get('/vet/photo/:id_vet', (req, res) => {
+app.get('/api/vet/photo/:id_vet', (req, res) => {
     const id_vet = req.params.id_vet;
 
     connection.query('SELECT * FROM users WHERE id = ?', id_vet, (error, results) => {
@@ -232,7 +232,7 @@ app.get('/vet/photo/:id_vet', (req, res) => {
 });
 
 // upload document klinik 
-app.post('/vet/upload/doc/:id_vet', uploadFile.single('file'), (req, res) => {
+app.post('/api/vet/upload/doc/:id_vet', uploadFile.single('file'), (req, res) => {
     const vet = {
         id: req.params.id_vet,
         document: req.file.path
@@ -253,7 +253,7 @@ app.post('/vet/upload/doc/:id_vet', uploadFile.single('file'), (req, res) => {
 });
 
 // show/show file doc
-app.get('/vet/show/doc/:id_vet', (req, res) => {
+app.get('/api/vet/show/doc/:id_vet', (req, res) => {
     const id_vet = req.params.id_vet;
 
     // Lakukan pengambilan informasi file dokumen dari database berdasarkan id_vet
