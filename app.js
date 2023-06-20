@@ -278,6 +278,8 @@ app.get('/vet/show/doc/:id_vet', (req, res) => {
 
 
 // Memulai server Express.js
-app.listen(8081, () => {
-    console.log('Server Express berjalan di port 8081');
+// server app
+const port = parseInt(process.env.PORT) || 8080;
+app.listen(port, () => {
+    console.log(`server-pettievet: listening on port ${port}`);
 });
