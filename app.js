@@ -104,7 +104,7 @@ app.put('/api/user/upload/photo/:id', upload.single('photo'), (req, res) => {
 });
 
 // get foto
-app.get('/api/user/photo/:id', (req, res) => {
+app.get('/api/user/show/photo/:id', (req, res) => {
     const userId = req.params.id;
 
     connection.query('SELECT * FROM users WHERE id = ?', userId, (error, results) => {
@@ -157,7 +157,7 @@ app.post('/api/customer/emergencyreq/:id_vet/:id_pet', upload.single('photo'), (
     });
 });
 
-
+// show emergency req
 app.get('/api/vet/emergencyreq/:id', (req, res) => {
     const requestId = req.params.id;
 
@@ -186,50 +186,6 @@ app.get('/api/vet/emergencyreq/:id', (req, res) => {
 });
 
 
-// upload foto klinik 
-app.post('/api/vet/upload/photo/:id_vet', upload.single('photo'), (req, res) => {
-    const vet = {
-        id: req.params.id_vet,
-        photo: req.file.path
-    };
-
-    connection.query('UPDATE users SET ? WHERE id = ?', [vet, req.params.id_vet], (error, result) => {
-        if (error) {
-            console.error('Error saving photo to database: ', error);
-            res.status(500).send('Error saving photo to database');
-        } else {
-            console.log('Photo saved to database.');
-            res.status(200).send({
-                message: 'Photo saved to database.',
-                result: vet
-            });
-        }
-    });
-});
-
-// get foto
-app.get('/api/vet/photo/:id_vet', (req, res) => {
-    const id_vet = req.params.id_vet;
-
-    connection.query('SELECT * FROM users WHERE id = ?', id_vet, (error, results) => {
-        if (error) {
-            console.error('Error retrieving user from database: ', error);
-            res.status(500).send('Error retrieving user from database');
-        } else {
-            const user = results[0];
-
-            fs.readFile(user.photo, (error, data) => {
-                if (error) {
-                    console.error('Error reading photo file: ', error);
-                    res.status(500).send('Error reading photo file');
-                } else {
-                    res.contentType('image/jpeg');
-                    res.send(data);
-                }
-            });
-        }
-    });
-});
 
 // upload document klinik 
 app.post('/api/vet/upload/doc/:id_vet', uploadFile.single('file'), (req, res) => {
@@ -277,9 +233,54 @@ app.get('/api/vet/show/doc/:id_vet', (req, res) => {
 });
 
 
+// // upload foto klinik 
+// app.post('/api/vet/upload/photo/:id_vet', upload.single('photo'), (req, res) => {
+//     const vet = {
+//         id: req.params.id_vet,
+//         photo: req.file.path
+//     };
+
+//     connection.query('UPDATE users SET ? WHERE id = ?', [vet, req.params.id_vet], (error, result) => {
+//         if (error) {
+//             console.error('Error saving photo to database: ', error);
+//             res.status(500).send('Error saving photo to database');
+//         } else {
+//             console.log('Photo saved to database.');
+//             res.status(200).send({
+//                 message: 'Photo saved to database.',
+//                 result: vet
+//             });
+//         }
+//     });
+// });
+
+// // get foto
+// app.get('/vet/photo/:id_vet', (req, res) => {
+//     const id_vet = req.params.id_vet;
+
+//     connection.query('SELECT * FROM users WHERE id = ?', id_vet, (error, results) => {
+//         if (error) {
+//             console.error('Error retrieving user from database: ', error);
+//             res.status(500).send('Error retrieving user from database');
+//         } else {
+//             const user = results[0];
+
+//             fs.readFile(user.photo, (error, data) => {
+//                 if (error) {
+//                     console.error('Error reading photo file: ', error);
+//                     res.status(500).send('Error reading photo file');
+//                 } else {
+//                     res.contentType('image/jpeg');
+//                     res.send(data);
+//                 }
+//             });
+//         }
+//     });
+// });
+
 // Memulai server Express.js
 // server app
-const port = parseInt(process.env.PORT) || 8080;
+const port = parseInt(process.env.PORT) || 8081;
 app.listen(port, () => {
     console.log(`server-pettievet: listening on port ${port}`);
 });
