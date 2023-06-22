@@ -84,7 +84,7 @@ app.get("/", function(req, res, next) {
 
 
 // add foto di profil
-app.put('/api/user/upload/photo/:id', upload.single('photo'), (req, res) => {
+app.post('/api/user/upload/photo/:id', upload.single('photo'), (req, res) => {
     const user = {
         id: req.params.id,
         photo: req.file.path
